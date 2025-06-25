@@ -34,13 +34,23 @@ export const TodolistTitle = ({ todolist }: Props) => {
     )
   }
 
-  const deleteTodolist = () => {
-    changeTodolistStatus("loading")
-    removeTodolist(id)
-      .unwrap()
-      .catch(() => {
-        changeTodolistStatus("idle")
+  const deleteTodolist = async () => {
+    const patchResult = dispatch(
+      todolistsApi.util.updateQueryData('getTodolists', undefined, state => {
+        const todolist = state.find(todolist => todolist.id === id)
+        if (todolist) {
+          todolist.entityStatus = 'loading'
+        }
       })
+    )
+    try {
+      const res = await removeTodolist(id)
+      if (res.error) {
+        patchResult.undo()
+      }
+    } catch {
+      patchResult.undo()
+    }
   }
 
   const changeTodolistTitle = (title: string) => {
