@@ -1,34 +1,34 @@
 //Login.tsx
-import { selectThemeMode, setIsLoggedInAC } from "@/app/app-slice"
-import { AUTH_TOKEN } from "@/common/constants"
-import { ResultCode } from "@/common/enums"
-import { useAppDispatch, useAppSelector } from "@/common/hooks"
-import { getTheme } from "@/common/theme"
-import { useLoginMutation } from "@/features/auth/api/authApi"
-import { type Inputs, loginSchema } from "@/features/auth/lib/schemas"
-import { zodResolver } from "@hookform/resolvers/zod"
-import Button from "@mui/material/Button"
-import Checkbox from "@mui/material/Checkbox"
-import FormControl from "@mui/material/FormControl"
-import FormControlLabel from "@mui/material/FormControlLabel"
-import FormGroup from "@mui/material/FormGroup"
-import FormLabel from "@mui/material/FormLabel"
-import Grid from "@mui/material/Grid2"
-import TextField from "@mui/material/TextField"
-import { Controller, type SubmitHandler, useForm } from "react-hook-form"
-import styles from "./Login.module.css"
-import { Captcha } from "@/common/components/Captcha/Captcha"
-import { useState, useEffect } from "react"
+import { selectThemeMode, setIsLoggedInAC } from "@/app/app-slice";
+import { AUTH_TOKEN } from "@/common/constants";
+import { ResultCode } from "@/common/enums";
+import { useAppDispatch, useAppSelector } from "@/common/hooks";
+import { getTheme } from "@/common/theme";
+import { useLoginMutation } from "@/features/auth/api/authApi";
+import { type Inputs, loginSchema } from "@/features/auth/lib/schemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import FormControl from "@mui/material/FormControl";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormGroup from "@mui/material/FormGroup";
+import FormLabel from "@mui/material/FormLabel";
+import Grid from "@mui/material/Grid2";
+import TextField from "@mui/material/TextField";
+import { Controller, type SubmitHandler, useForm } from "react-hook-form";
+import styles from "./Login.module.css";
+import { Captcha } from "@/common/components/Captcha/Captcha";
+import { useState } from "react";
 import { useGetCaptchaUrlQuery } from "@/features/auth/api/authApi";
 
 export const Login = () => {
-  const themeMode = useAppSelector(selectThemeMode)
+  const themeMode = useAppSelector(selectThemeMode);
 
-  const [login] = useLoginMutation()
+  const [login] = useLoginMutation();
 
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
-  const theme = getTheme(themeMode)
+  const theme = getTheme(themeMode);
 
   const [showCaptcha, setShowCaptcha] = useState(false);
 
@@ -43,11 +43,9 @@ export const Login = () => {
   } = useForm<Inputs>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "", rememberMe: false, captcha: "" },
-  })
+  });
 
-  const {
-      refetch,
-    } = useGetCaptchaUrlQuery();
+  const { refetch } = useGetCaptchaUrlQuery();
 
   // v1
   // const onSubmit: SubmitHandler<Inputs> = async (data) => {
@@ -92,8 +90,13 @@ export const Login = () => {
         dispatch(setIsLoggedInAC({ isLoggedIn: true }));
         localStorage.setItem(AUTH_TOKEN, res.data.token);
         reset();
-      } else if (res.resultCode === ResultCode.CaptchaError && res.fieldsErrors?.length > 0) {
-        const captchaError = res.fieldsErrors.find(e => e.field === 'captcha');
+      } else if (
+        res.resultCode === ResultCode.CaptchaError &&
+        res.fieldsErrors?.length > 0
+      ) {
+        const captchaError = res.fieldsErrors.find(
+          (e) => e.field === "captcha"
+        );
         setError("captcha", { type: "custom", message: captchaError?.error });
         setShowCaptcha(true);
         resetField("captcha");
@@ -108,20 +111,19 @@ export const Login = () => {
       // )
 
       // const passError = res.messages[0]
-      
+
       // if (captchaError && res.resultCode === ResultCode.CaptchaError) {
       //   setShowCaptcha(true);
-        
+
       //   // выводим ошибку, если ввели каптчу не правильно
       //   setError("captcha", { type: "custom", message: captchaError?.error })
       //   resetField("captcha");
       //   refetch()
-      
+
       // } else {
       //   setError("password", { type: "custom", message: passError })
       // }
-      
-    } catch (error: any) { }
+    } catch (error: any) {}
   };
 
   return (
@@ -149,11 +151,30 @@ export const Login = () => {
             </p>
           </FormLabel>
           <FormGroup>
-            <TextField label="Email" margin="normal" error={!!errors.email} {...register("email")} />
-            {errors.email && <span className={styles.errorMessage}>{errors.email.message}</span>}
-            
-            <TextField type="password" label="Password" margin="normal" error={!!errors.email} {...register("password")} />
-            {errors.password && <span className={styles.errorMessage}>{errors.password.message}</span>}
+            <TextField
+              label="Email"
+              margin="normal"
+              error={!!errors.email}
+              {...register("email")}
+            />
+            {errors.email && (
+              <span className={styles.errorMessage}>
+                {errors.email.message}
+              </span>
+            )}
+
+            <TextField
+              type="password"
+              label="Password"
+              margin="normal"
+              error={!!errors.email}
+              {...register("password")}
+            />
+            {errors.password && (
+              <span className={styles.errorMessage}>
+                {errors.password.message}
+              </span>
+            )}
 
             <FormControlLabel
               label={"Remember me"}
@@ -161,11 +182,13 @@ export const Login = () => {
                 <Controller
                   name={"rememberMe"}
                   control={control}
-                  render={({ field: { value, ...field } }) => <Checkbox {...field} checked={value} />}
+                  render={({ field: { value, ...field } }) => (
+                    <Checkbox {...field} checked={value} />
+                  )}
                 />
               }
             />
-            
+
             {/* v1 */}
             {/* <Captcha />
             <TextField type="text" label="CAPTCHA" margin="normal" error={!!errors.captcha} {...register("captcha")} />
@@ -175,7 +198,7 @@ export const Login = () => {
             {/* Отображаем капчу только при необходимости */}
             {showCaptcha && (
               <>
-                <Captcha refetch={refetch} />
+                <Captcha />
                 <TextField
                   label="Captcha"
                   margin="normal"
@@ -189,7 +212,7 @@ export const Login = () => {
                 )}
               </>
             )}
-       
+
             <Button type="submit" variant="contained" color="primary">
               Login
             </Button>
@@ -197,5 +220,5 @@ export const Login = () => {
         </FormControl>
       </form>
     </Grid>
-  )
-}
+  );
+};
