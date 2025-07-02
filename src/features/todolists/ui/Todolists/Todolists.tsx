@@ -8,7 +8,7 @@ import { TodolistItem } from "./TodolistItem/TodolistItem"
 
 export const Todolists = () => {
   const { data: todolists, isLoading } = useGetTodolistsQuery(undefined, {
-    pollingInterval: 3000,
+    pollingInterval: 30000,
     skipPollingIfUnfocused: true,
   })
 

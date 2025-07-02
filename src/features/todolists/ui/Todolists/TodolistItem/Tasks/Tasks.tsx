@@ -22,9 +22,6 @@ export const Tasks = ({ todolist }: Props) => {
     params: { page },
   })
 
-  //console.log({ isLoading, isFetching })
-  console.log({ data, currentData })
-
   let filteredTasks = data?.items
   if (filter === "active") {
     filteredTasks = filteredTasks?.filter((task) => task.status === TaskStatus.New)

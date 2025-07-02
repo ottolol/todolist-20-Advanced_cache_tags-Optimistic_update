@@ -1,6 +1,6 @@
 import { baseApi } from "@/app/baseApi"
 import type { BaseResponse } from "@/common/types"
-import type { LoginArgs } from "./authApi.types"
+import type { CaptchaResponse, LoginArgs } from "./authApi.types"
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -20,7 +20,14 @@ export const authApi = baseApi.injectEndpoints({
         method: "DELETE",
       }),
     }),
+    // Эндпоинт для получения URL капчи
+    getCaptchaUrl: build.query<CaptchaResponse, void>({
+      query: () => ({
+        url: "/security/get-captcha-url", 
+        method: "GET",
+      }),
+    }),
   }),
 })
 
-export const { useMeQuery, useLoginMutation, useLogoutMutation } = authApi
+export const { useMeQuery, useLoginMutation, useLogoutMutation, useGetCaptchaUrlQuery } = authApi

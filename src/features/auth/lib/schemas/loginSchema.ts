@@ -7,6 +7,7 @@ export const loginSchema = z.object({
     .min(1, { message: "Password is required" })
     .min(3, { message: "Password must be at least 3 characters long" }),
   rememberMe: z.boolean(),
+  captcha: z.string().min(0, "Please enter the CAPTCHA"),
 })
 
 export type Inputs = z.infer<typeof loginSchema>
